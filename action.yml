@@ -1,5 +1,5 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'NeoCustom Action'
+description: 'Custom GitHub Action to greet and log time'
 inputs:
   who-to-greet:  # id of input
     description: 'Who to greet'

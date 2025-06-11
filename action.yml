@@ -8,6 +8,8 @@ inputs:
 outputs:
   time: # id of output
     description: 'The time we greeted you'
+  root-files:
+    description: 'JSON list of filenames in the root directory'
 runs:
   using: 'node20'
   main: 'dist/index.js'

@@ -7,11 +7,6 @@ inputs:
     required: true
     default: 'World'
 
-# Install cdxgen globally
-steps:
-  - name: Install cdxgen globally
-    run: npm install -g @cyclonedx/cdxgen
-
 outputs:
   time:
     description: 'The time we greeted you'

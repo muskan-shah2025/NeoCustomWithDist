@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install-cdxgen": "pip install cdxgen",
+    "build": "esbuild index.js --bundle --outfile=dist/index.js --platform=node",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,11 +23,7 @@
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.1"
   },
- "scripts": {
-  "install-cdxgen": "pip install cdxgen",
-  "build": "your build command here (if any)",
-  "start": "node dist/index.js"
-}
-
-
+  "devDependencies": {
+    "esbuild": "^0.25.5"
+  }
 }

@@ -45,10 +45,47 @@
 // }
 
 
+// const core = require('@actions/core');
+// const path = require("path");
+// const fs = require("fs");
+// const { createBom } = require("@cyclonedx/cdxgen");  // Import once here
+
+// async function run() {
+//   try {
+//     const username = core.getInput('username');
+//     const password = core.getInput('password');
+
+//     core.info(`✅ Login attempt for user: ${username}`);
+
+//     const target = path.resolve(".");
+//     if (!fs.existsSync(path.join(target, "pom.xml"))) {
+//       throw new Error("pom.xml not found in root directory.");
+//     }
+
+//     core.info("📦 Found pom.xml, generating SBOM...");
+
+//     const bom = await createBom(target, {
+//       multiProject: false,
+//       installDeps: false,
+//       deep: true,
+//       outputFormat: "json",
+//     });
+
+//     const outputPath = path.resolve("sbom.json");
+//     fs.writeFileSync(outputPath, JSON.stringify(bom, null, 2));
+
+//     core.info(`✅ SBOM generated at: ${outputPath}`);
+//   } catch (error) {
+//     core.setFailed(`❌ Action failed: ${error.message}`);
+//   }
+// }
+
+// run();
+
 const core = require('@actions/core');
 const path = require("path");
 const fs = require("fs");
-const { createBom } = require("@cyclonedx/cdxgen");  // Import once here
+const { execSync } = require("child_process");
 
 async function run() {
   try {
@@ -57,28 +94,40 @@ async function run() {
 
     core.info(`✅ Login attempt for user: ${username}`);
 
-    const target = path.resolve(".");
-    if (!fs.existsSync(path.join(target, "pom.xml"))) {
-      throw new Error("pom.xml not found in root directory.");
+    const workspace = process.env.GITHUB_WORKSPACE;
+    if (!workspace) {
+      throw new Error("GITHUB_WORKSPACE environment variable is not set.");
+    }
+
+    // Verify pom.xml exists
+    if (!fs.existsSync(path.join(workspace, "pom.xml"))) {
+      throw new Error("pom.xml not found in the root directory.");
     }
 
     core.info("📦 Found pom.xml, generating SBOM...");
 
-    const bom = await createBom(target, {
-      multiProject: false,
-      installDeps: false,
-      deep: true,
-      outputFormat: "json",
-    });
+    // Run cdxgen CLI in the workspace folder
+    execSync("cdxgen -r -o sbom.json", { cwd: workspace, stdio: "inherit" });
 
-    const outputPath = path.resolve("sbom.json");
-    fs.writeFileSync(outputPath, JSON.stringify(bom, null, 2));
+    // Check SBOM generated
+    const sbomPath = path.join(workspace, "sbom.json");
+    if (!fs.existsSync(sbomPath)) {
+      throw new Error("SBOM file sbom.json was not created.");
+    }
 
-    core.info(`✅ SBOM generated at: ${outputPath}`);
+    // Read SBOM contents
+    const sbomContent = fs.readFileSync(sbomPath, "utf-8");
+
+    core.info(`✅ SBOM generated successfully: sbom.json`);
+
+    // Set output
+    core.setOutput("sbom", sbomContent);
+
   } catch (error) {
     core.setFailed(`❌ Action failed: ${error.message}`);
   }
 }
 
 run();
+
 

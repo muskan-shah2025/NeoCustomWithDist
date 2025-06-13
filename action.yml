@@ -9,7 +9,7 @@ inputs:
 
 # Install cdxgen globally
 steps:
-  - name: Install cdxgen
+  - name: Install cdxgen globally
     run: npm install -g @cyclonedx/cdxgen
 
 outputs:

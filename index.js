@@ -48,12 +48,7 @@
 const core = require('@actions/core');
 const path = require("path");
 const fs = require("fs");
-
-async function installCDXGen() {
-  const { execSync } = require("child_process");
-  core.info("📦 Installing @cyclonedx/cdxgen...");
-  execSync("npm install @cyclonedx/cdxgen", { stdio: 'inherit' });
-}
+const { createBom } = require("@cyclonedx/cdxgen");  // Import once here
 
 async function run() {
   try {
@@ -61,10 +56,6 @@ async function run() {
     const password = core.getInput('password');
 
     core.info(`✅ Login attempt for user: ${username}`);
-
-    await installCDXGen(); // 👈 install cdxgen dynamically
-
-    const { createBom } = require("@cyclonedx/cdxgen");
 
     const target = path.resolve(".");
     if (!fs.existsSync(path.join(target, "pom.xml"))) {
@@ -90,3 +81,4 @@ async function run() {
 }
 
 run();
+

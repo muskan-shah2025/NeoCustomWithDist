@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install-cdxgen": "pip install cdxgen",
-    "build": "esbuild index.js --bundle --outfile=dist/index.js --platform=node",
+    "build": "esbuild index.js --bundle --platform=node --outfile=dist/index.js --loader:.json=json",
     "start": "node dist/index.js"
   },
   "repository": {

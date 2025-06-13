@@ -94,11 +94,26 @@ async function installCDXGen() {
 
 async function run() {
   try {
+    const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
+
+    // Dynamically create dist/data folder inside runner workspace
+    const distDataPath = path.join(workspace, 'dist/data');
+    if (!fs.existsSync(distDataPath)) {
+      fs.mkdirSync(distDataPath, { recursive: true });
+      core.info('✅ Created dist/data folder dynamically');
+    }
+
+    // Dynamically create lic-mapping.json stub file inside dist/data
+    const licMappingFile = path.join(distDataPath, 'lic-mapping.json');
+    if (!fs.existsSync(licMappingFile)) {
+      fs.writeFileSync(licMappingFile, '{}');
+      core.info('✅ Created stub lic-mapping.json file dynamically');
+    }
+
     await installCDXGen();
 
     const { createBom } = require('@cyclonedx/cdxgen');
 
-    const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
     const pomPath = path.join(workspace, 'pom.xml');
     if (!fs.existsSync(pomPath)) {
       throw new Error('pom.xml not found in root directory.');
@@ -124,6 +139,7 @@ async function run() {
 }
 
 run();
+
 
 
 

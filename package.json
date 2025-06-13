@@ -1,27 +1,14 @@
 {
   "name": "neocustomwithdist",
   "version": "1.0.0",
-  "description": "",
+  "description": "GitHub Action to generate SBOM using cdxgen",
   "main": "index.js",
   "scripts": {
-    "install-cdxgen": "pip install cdxgen",
-    "build": "esbuild index.js --bundle --platform=node --outfile=dist/index.js --loader:.json=json",
+    "build": "esbuild index.js --bundle --platform=node --outfile=dist/index.js --loader:.json=json && mkdir -p dist/data && cp node_modules/@cyclonedx/cdxgen/data/lic-mapping.json dist/data/",
     "start": "node dist/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/muskan-shah2025/NeoCustomWithDist.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/muskan-shah2025/NeoCustomWithDist/issues"
-  },
-  "homepage": "https://github.com/muskan-shah2025/NeoCustomWithDist#readme",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.1",
     "@cyclonedx/cdxgen": "^11.3.2"
   },
   "devDependencies": {

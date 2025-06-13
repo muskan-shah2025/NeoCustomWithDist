@@ -83,55 +83,37 @@
 // run();
 
 const core = require('@actions/core');
-const fs = require('fs');
-const path = require('path');
 const { execSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
 
 async function installCDXGen() {
-  core.info('📦 Installing @cyclonedx/cdxgen...');
-  execSync('npm install @cyclonedx/cdxgen', { stdio: 'inherit' });
+  core.info('📦 Installing @cyclonedx/cdxgen globally...');
+  execSync('npm install -g @cyclonedx/cdxgen', { stdio: 'inherit' });
 }
 
 async function run() {
   try {
     const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
+    const pomPath = path.join(workspace, 'pom.xml');
 
-    // Dynamically create dist/data folder inside runner workspace
-    const distDataPath = path.join(workspace, 'dist/data');
-    if (!fs.existsSync(distDataPath)) {
-      fs.mkdirSync(distDataPath, { recursive: true });
-      core.info('✅ Created dist/data folder dynamically');
-    }
-
-    // Dynamically create lic-mapping.json stub file inside dist/data
-    const licMappingFile = path.join(distDataPath, 'lic-mapping.json');
-    if (!fs.existsSync(licMappingFile)) {
-      fs.writeFileSync(licMappingFile, '{}');
-      core.info('✅ Created stub lic-mapping.json file dynamically');
+    if (!fs.existsSync(pomPath)) {
+      throw new Error('❌ pom.xml not found in project root.');
     }
 
     await installCDXGen();
 
-    const { createBom } = require('@cyclonedx/cdxgen');
+    core.info('📦 Found pom.xml, generating SBOM using CLI...');
 
-    const pomPath = path.join(workspace, 'pom.xml');
-    if (!fs.existsSync(pomPath)) {
-      throw new Error('pom.xml not found in root directory.');
-    }
-
-    core.info('📦 Found pom.xml, generating SBOM...');
-
-    const bom = await createBom(workspace, {
-      multiProject: false,
-      installDeps: false,
-      deep: true,
-      outputFormat: 'json',
+    // Run cdxgen CLI directly – no need for dist/data at all
+    const outputPath = path.join(workspace, 'sbom.json');
+    execSync(`cdxgen -t java -o sbom.json`, {
+      cwd: workspace,
+      stdio: 'inherit',
     });
 
-    const outputPath = path.join(workspace, 'sbom.json');
-    fs.writeFileSync(outputPath, JSON.stringify(bom, null, 2));
-
-    core.setOutput('sbom', JSON.stringify(bom));
+    const sbomContent = fs.readFileSync(outputPath, 'utf8');
+    core.setOutput('sbom', sbomContent);
     core.info(`✅ SBOM generated at: ${outputPath}`);
   } catch (error) {
     core.setFailed(`❌ Action failed: ${error.message}`);
@@ -139,6 +121,7 @@ async function run() {
 }
 
 run();
+
 
 
 

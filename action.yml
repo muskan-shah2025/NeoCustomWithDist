@@ -17,15 +17,16 @@ outputs:
 
 # with dist and js code
 # run in terminal - npm run build
-# runs:
-#   using: 'node20'
-#   main: 'dist/index.js'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
 
 #  with docker img
 # runs:
 #   using: 'docker'
 #   image: 'docker://prabhushan/sbom-base:latest'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'  # this tells GitHub to build your custom image
+
+# runs:
+#   using: 'docker'
+#   image: 'Dockerfile'  # this tells GitHub to build your custom image
 

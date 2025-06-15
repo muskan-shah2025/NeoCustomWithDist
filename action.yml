@@ -26,6 +26,7 @@ runs:
 #   using: 'docker'
 #   image: 'docker://prabhushan/sbom-base:latest'
 
+
 # runs:
 #   using: 'docker'
 #   image: 'Dockerfile'  # this tells GitHub to build your custom image

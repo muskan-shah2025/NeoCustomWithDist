@@ -22,3 +22,4 @@ outputs:
 runs:
   using: 'docker'
   image: 'docker://prabhushan/sbom-base:latest'
+  

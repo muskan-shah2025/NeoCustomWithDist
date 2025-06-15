@@ -1,7 +1,7 @@
 FROM prabhushan/sbom-base:latest
 
 # Install jq
-RUN apt-get update && apt-get install -y jq
+RUN apk add --no-cache jq
 
 # Copy your entrypoint script
 COPY entrypoint.sh /entrypoint.sh

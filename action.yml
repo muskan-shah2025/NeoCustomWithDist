@@ -22,7 +22,10 @@ outputs:
 #   main: 'dist/index.js'
 
 #  with docker img
+# runs:
+#   using: 'docker'
+#   image: 'docker://prabhushan/sbom-base:latest'
 runs:
   using: 'docker'
-  image: 'docker://prabhushan/sbom-base:latest'
-  entrypoint: '/entrypoint.sh'
+  image: 'Dockerfile'  # this tells GitHub to build your custom image
+
